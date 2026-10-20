@@ -1,0 +1,51 @@
+server:
+  port: 8080
+
+gateway:
+  # Exact-prompt response cache TTL.
+  cache-ttl-seconds: 300
+  # Reject prompts that trip the injection heuristics with 400.
+  block-on-injection: true
+  # Circuit-breaker-lite tuning.
+  circuit-breaker-failure-threshold: 5
+  circuit-breaker-cooldown-seconds: 60
+
+  tenants:
+    - name: demo
+      api-key: demo-key-123
+      requests-per-minute: 60
+      tokens-per-day: 100000
+    - name: low-quota
+      api-key: low-quota-key-456
+      requests-per-minute: 2
+      tokens-per-day: 500
+
+  providers:
+    # Default: deterministic local stub — no network, no API key.
+    - name: stub
+      type: stub
+      model: stub-model
+      cost-per-1k-prompt-tokens: 0
+      cost-per-1k-completion-tokens: 0
+
+    # Opt-in: any OpenAI-compatible upstream. Uncomment and export the env vars.
+    # Order matters: the router tries providers top-down and fails over on
+    # retryable errors.
+    # - name: primary
+    #   type: openai
+    #   base-url: ${UPSTREAM_BASE_URL}
+    #   api-key: ${UPSTREAM_API_KEY}
+    #   model: gpt-4o-mini
+    #   cost-per-1k-prompt-tokens: 0.00015
+    #   cost-per-1k-completion-tokens: 0.0006
+    # - name: fallback
+    #   type: openai
+    #   base-url: ${UPSTREAM_FALLBACK_BASE_URL:https://api.openai.com}
+    #   api-key: ${UPSTREAM_FALLBACK_API_KEY}
+    #   model: gpt-4o-mini
+    #   cost-per-1k-prompt-tokens: 0.00015
+    #   cost-per-1k-completion-tokens: 0.0006
+
+logging:
+  level:
+    com.bhagyashrit: INFO

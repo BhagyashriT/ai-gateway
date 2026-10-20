@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Structured JSON-ish logs without extra dependencies. -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>{"ts":"%d{yyyy-MM-dd'T'HH:mm:ss.SSS'Z', UTC}","level":"%level","logger":"%logger{36}","requestId":"%X{requestId}","tenant":"%X{tenant}","msg":"%msg"}%n</pattern>
+        </encoder>
+    </appender>
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+    </root>
+    <logger name="org.springframework.web" level="WARN"/>
+</configuration>
